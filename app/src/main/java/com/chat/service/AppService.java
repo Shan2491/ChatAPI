@@ -37,16 +37,28 @@ public class AppService {
 		contactNo.setCountryCode(req.get("country_code"));
 		contactNo.setMobileNumber(req.get("mobile_number"));
 		user.setContactNumber(contactNo);
+		if (checkUserExists(req.get("country_code"), req.get("mobile_number"))) {
+			resultMessage = "User already exists!!!";
+		} else {
+			result = userRepo.createUser(user);
 
-		result = userRepo.createUser(user);
-
-		if (result == 0) {
-			resultMessage = "Insertion Failed";
-		} else
-			resultMessage = "User Created Successfully";
+			if (result == 0) {
+				resultMessage = "Insertion Failed";
+			} else
+				resultMessage = "User Created Successfully";
+		}
 
 		return resultMessage;
 
+	}
+
+	public boolean checkUserExists(String countryCode, String mobileNumber) {
+		boolean result = false;
+		if (userRepo.getUserId(countryCode, mobileNumber) == 0) {
+			result = false;
+		} else
+			result = true;
+		return result;
 	}
 
 	public String createContact(Map<String, String> req) {
@@ -66,18 +78,58 @@ public class AppService {
 		return resultMessage;
 
 	}
-	
 
-	public String deleteContact(int userId, int contactId) {
+	public String deleteContact(int contactId) {
 
 		int result;
 		String resultMessage;
-		result = contactRepo.deleteContact(userId, contactId);
-		if(result == 0) {
+		result = contactRepo.deleteContact(contactId);
+		if (result == 0) {
 			resultMessage = "Contact not deleted";
-		}
-		else 
+		} else
 			resultMessage = "Contact deleted successfully";
+		return resultMessage;
+
+	}
+
+	public String blockContact(int contactId) {
+
+		int result;
+		String resultMessage;
+		result = contactRepo.blockContact(contactId);
+		if (result == 0) {
+			resultMessage = "Contact not blocked";
+		} else
+			resultMessage = "Contact has been blocked successfully";
+		return resultMessage;
+
+	}
+
+	public String unBlockContact(int contactId) {
+
+		int result;
+		String resultMessage;
+		result = contactRepo.unBlockContact(contactId);
+		if (result == 0) {
+			resultMessage = "Contact not unblocked";
+		} else
+			resultMessage = "Contact has been unblocked successfully";
+		return resultMessage;
+
+	}
+
+	public String deleteUser(int userId) {
+
+		int result;
+		String resultMessage;
+		result = userRepo.deleteUser(userId);
+		if (result == 0) {
+			resultMessage = "User not deleted";
+		} else {
+			result = contactRepo.deleteAllContactsOfUser(userId);
+			resultMessage = "User deleted successfully";
+		}
+
 		return resultMessage;
 
 	}

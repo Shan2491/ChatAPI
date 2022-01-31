@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 
 import com.chat.model.Contact;
 import com.chat.model.ContactNumber;
-import com.chat.model.User;
 
 @Repository
 public class ContactRepository {
@@ -22,7 +21,7 @@ public class ContactRepository {
 
 	public ArrayList<Contact> getContactsList(int userId) {
 
-		ArrayList<Contact> contactList = new ArrayList();
+		ArrayList<Contact> contactList = new ArrayList<Contact>();
 		Contact contact;
 		ContactNumber contactNumber;
 		ResultSet resultSet = null;
@@ -84,8 +83,8 @@ public class ContactRepository {
 		return result;
 
 	}
-	
-	public int deleteContact(int userId, int contactId) {
+
+	public int deleteContact(int contactId) {
 		int result = 0;
 		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
 			if (connection != null) {
@@ -106,5 +105,91 @@ public class ContactRepository {
 
 	}
 
+	public int deleteAllContactsOfUser(int userId) {
+		int result = 0;
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			if (connection != null) {
+				System.out.println("Connected to DB");
+			}
+
+			String selectSql = "Delete from contact where created_user_id  = ?";
+			PreparedStatement statement = connection.prepareStatement(selectSql);
+			statement.setInt(1, userId);
+
+			result = statement.executeUpdate();
+		}
+		// Handle any errors that may have occurred.
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	public int blockContact(int contactId) {
+		int result = 0;
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			if (connection != null) {
+				System.out.println("Connected to DB");
+			}
+
+			String selectSql = "Update contact set blocked = 'Y' where contact_id = ?";
+			PreparedStatement statement = connection.prepareStatement(selectSql);
+			statement.setInt(1, contactId);
+
+			result = statement.executeUpdate();
+		}
+		// Handle any errors that may have occurred.
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	public int unBlockContact(int contactId) {
+		int result = 0;
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			if (connection != null) {
+				System.out.println("Connected to DB");
+			}
+
+			String selectSql = "Update contact set blocked = 'N' where contact_id = ?";
+			PreparedStatement statement = connection.prepareStatement(selectSql);
+			statement.setInt(1, contactId);
+			result = statement.executeUpdate();
+		}
+		// Handle any errors that may have occurred.
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	public int getUserbyContactId(int contactId) {
+		ResultSet resultSet = null;
+		int contactUserId = 0;
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			if (connection != null) {
+				System.out.println("Connected to DB");
+			}
+
+			String selectSql = "select contact_user_id from contact where contact_id = ?";
+			PreparedStatement statement = connection.prepareStatement(selectSql);
+			statement.setInt(1, contactId);
+
+			resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				contactUserId = resultSet.getInt("contact_user_id");
+			}
+		}
+		// Handle any errors that may have occurred.
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return contactUserId;
+
+	}
 
 }

@@ -66,4 +66,25 @@ public class UserRepository {
 		
 	}
 	
+	public int deleteUser(int userId) {
+		int result = 0;
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			if (connection != null) {
+				System.out.println("Connected to DB");
+			}
+
+			String selectSql = "Delete from user_info where user_id = ?";
+			PreparedStatement statement = connection.prepareStatement(selectSql);
+			statement.setInt(1, userId);
+
+			result = statement.executeUpdate();
+		}
+		// Handle any errors that may have occurred.
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+	
 }

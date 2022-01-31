@@ -1,4 +1,6 @@
 com\chat\model\ContactNumber.class
+com\chat\repository\ChatRepository.class
+com\chat\model\Chat.class
 com\chat\MyApplication.class
 com\chat\model\Contact.class
 com\chat\model\User.class
@@ -6,4 +8,5 @@ com\chat\service\AppService.class
 com\chat\repository\UserRepository.class
 com\chat\controller\AppController.class
 com\chat\model\Message.class
+com\chat\service\ChatService.class
 com\chat\repository\ContactRepository.class
