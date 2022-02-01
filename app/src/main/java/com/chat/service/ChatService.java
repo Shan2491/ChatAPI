@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.chat.model.Chat;
+import com.chat.model.MessageContent;
 import com.chat.model.Message;
 import com.chat.repository.ChatRepository;
 import com.chat.repository.ContactRepository;
+import com.chat.repository.UserRepository;
 
 @Service
 public class ChatService {
@@ -19,6 +22,12 @@ public class ChatService {
 
 	@Autowired
 	private ContactRepository contactRepo;
+	
+	@Autowired
+	private UserRepository userRepo;
+	
+	@Autowired
+	private SimpMessagingTemplate template;
 
 	public String sendMessage(Map<String, String> req, int chatId, int userId) {
 
@@ -30,6 +39,9 @@ public class ChatService {
 			resultMessage = "Message sent failed";
 		} else {
 			resultMessage = "Message Sent Successfully";
+			String userName = userRepo.getUserName(userId);
+			String message = "New Message from " + userName + " \""+  req.get("message_content") + "\"";
+			 this.template.convertAndSend("/topic/messages", new MessageContent(message));
 			updateChat(req, contactUserId, userId);
 		}
 

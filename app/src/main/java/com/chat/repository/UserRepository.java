@@ -158,5 +158,25 @@ public class UserRepository {
 		}
 		return userId;
 	}
+	
+	public String getUserName(int userId) {
+		String userName = "";
+		ResultSet resultSet = null;
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			if (connection != null) {
+				System.out.println("Connected to DB");
+			}
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.GET_USER_NAME_QUERY);
+			statement.setInt(1, userId);
+			resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				userName = resultSet.getString("user_first_name") + " " + resultSet.getString("user_last_name");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return userName;
+
+	}
 
 }

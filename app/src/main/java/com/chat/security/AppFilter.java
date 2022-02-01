@@ -31,7 +31,8 @@ public class AppFilter implements Filter {
 		System.out.println("Request URI is: " + req.getRequestURI());
 		System.out.println("Token" + req.getHeader("X-AUTH-TOKEN"));
 
-		if ("/".equalsIgnoreCase(req.getRequestURI()) || (req.getRequestURI() != null && req.getRequestURI().contains("users")) ) {
+		if ("/".equalsIgnoreCase(req.getRequestURI()) || (req.getRequestURI() != null && req.getRequestURI().contains("users"))
+				|| (req.getRequestURI() != null && ! req.getRequestURI().contains("/api/"))) {
 			chain.doFilter(request, response);
 		} else if (req.getHeader("X-AUTH-TOKEN") != null){
 			int userId = userRepo.validateToken(req.getHeader("X-AUTH-TOKEN").toString());

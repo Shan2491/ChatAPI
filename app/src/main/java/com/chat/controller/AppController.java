@@ -23,6 +23,7 @@ import com.chat.model.Message;
 import com.chat.service.AppService;
 import com.chat.service.ChatService;
 
+@RequestMapping("/api")
 @RestController
 public class AppController {
 
