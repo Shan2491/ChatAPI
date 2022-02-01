@@ -8,14 +8,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.chat.model.Chat;
 import com.chat.model.Message;
+import com.chat.util.SQLHelper;
 
 @Repository
 public class ChatRepository {
-	String connectionUrl = "jdbc:sqlserver://localhost:1433;database=MESSENGER;user=appuser1;password=password3;";
+
+	String connectionUrl = SQLHelper.CONNECTION_DETAILS;
 
 	public int addNewMessage(Map<String, String> input, int receiverUserId, int chatId, int userId) {
 		int result = 0;
@@ -23,10 +26,7 @@ public class ChatRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-
-			String selectSql = "INSERT INTO [dbo].[message_history] ([chat_id], [sender_user_id], [receiver_user_id], [message_type], [text_message_content], [message_sent_time] , [message_status])\r\n"
-					+ "     VALUES (?,?,?,?,?,GETDATE(),?)";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.ADD_NEW_MESSAGE_QUERY);
 			statement.setInt(1, chatId);
 			statement.setInt(2, userId);
 			statement.setInt(3, receiverUserId);
@@ -50,9 +50,7 @@ public class ChatRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-
-			String selectSql = "Insert into chat (primary_user_id, secondary_user_id) " + "values (?, ?)";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.ADD_NEW_CHAT_QUERY);
 			statement.setInt(1, primaryUserId);
 			statement.setInt(2, secondaryUserId);
 
@@ -73,9 +71,7 @@ public class ChatRepository {
 				System.out.println("Connected to DB");
 			}
 
-			String selectSql = "Update chat set last_message_sent_time = getdate(), last_message_content = ?, last_message_by = ? "
-					+ "where primary_user_id = ? and secondary_user_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.UPDATE_CHAT_QUERY);
 			statement.setString(1, messageContent);
 			statement.setInt(2, sentBy);
 			statement.setInt(3, primaryUserId);
@@ -97,8 +93,7 @@ public class ChatRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-			String selectSql = "Select * from chat where primary_user_id = ? and secondary_user_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.CHECK_CHAT_EXISTS);
 			statement.setInt(1, primaryUserId);
 			statement.setInt(2, secondaryUserId);
 			resultSet = statement.executeQuery();
@@ -122,9 +117,7 @@ public class ChatRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-			String selectSql = "SELECT [chat_id],[primary_user_id] ,[secondary_user_id] ,[last_message_sent_time] ,[last_message_content] ,[last_message_by]\r\n"
-					+ "  FROM [dbo].[chat] where primary_user_id = ? or secondary_user_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.CHAT_LIST_QUERY);
 			statement.setInt(1, userId);
 			statement.setInt(2, userId);
 			resultSet = statement.executeQuery();
@@ -159,9 +152,7 @@ public class ChatRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-			String selectSql = "select message_id, message_type, text_message_content, message_sent_time, sender_user_id"
-					+ " from message_history where chat_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.CHAT_MESSAGES_QUERY);
 			statement.setInt(1, chatId);
 			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
@@ -186,8 +177,7 @@ public class ChatRepository {
 				System.out.println("Connected to DB");
 			}
 
-			String selectSql = "Delete from message_history where message_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.DELETE_MESSAGE);
 			statement.setInt(1, messageId);
 
 			result = statement.executeUpdate();

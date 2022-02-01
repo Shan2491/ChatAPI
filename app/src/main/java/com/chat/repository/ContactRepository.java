@@ -9,15 +9,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.chat.model.Contact;
 import com.chat.model.ContactNumber;
+import com.chat.util.SQLHelper;
 
 @Repository
 public class ContactRepository {
-
-	String connectionUrl = "jdbc:sqlserver://localhost:1433;database=MESSENGER;user=appuser1;password=password3;";
+	
+	String connectionUrl = SQLHelper.CONNECTION_DETAILS;
 
 	public ArrayList<Contact> getContactsList(int userId) {
 
@@ -30,10 +32,7 @@ public class ContactRepository {
 				System.out.println("Connected to DB");
 			}
 
-			String selectSql = "select contact_id, contact_first_name, contact_last_name, contact_user_id, blocked, country_code, mobile_number "
-					+ "from contact a join user_info b on a.contact_user_id = b.user_id "
-					+ "where a.created_user_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.CONTACT_LIST_QUERY);
 			statement.setInt(1, userId);
 			resultSet = statement.executeQuery();
 
@@ -64,10 +63,7 @@ public class ContactRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-
-			String selectSql = "Insert into contact (created_user_id, contact_first_name, contact_last_name, contact_user_id, created_time, blocked) "
-					+ "values (?, ?, ?, ?, getdate(), ?) ";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.CREATE_CONTACT_QUERY);
 			statement.setInt(1, userId);
 			statement.setString(2, input.get("first_name"));
 			statement.setString(3, input.get("last_name"));
@@ -91,8 +87,7 @@ public class ContactRepository {
 				System.out.println("Connected to DB");
 			}
 
-			String selectSql = "Delete from contact where contact_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.DELETE_CONTACT_QUERY);
 			statement.setInt(1, contactId);
 
 			result = statement.executeUpdate();
@@ -111,9 +106,7 @@ public class ContactRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-
-			String selectSql = "Delete from contact where created_user_id  = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.DELETE_ALL_CONTACT_QUERY);
 			statement.setInt(1, userId);
 
 			result = statement.executeUpdate();
@@ -133,8 +126,7 @@ public class ContactRepository {
 				System.out.println("Connected to DB");
 			}
 
-			String selectSql = "Update contact set blocked = 'Y' where contact_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.BLOCK_CONTACT_QUERY);
 			statement.setInt(1, contactId);
 
 			result = statement.executeUpdate();
@@ -153,9 +145,7 @@ public class ContactRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-
-			String selectSql = "Update contact set blocked = 'N' where contact_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.UNBLOCK_CONTACT_QUERY);
 			statement.setInt(1, contactId);
 			result = statement.executeUpdate();
 		}
@@ -174,9 +164,7 @@ public class ContactRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-
-			String selectSql = "select contact_user_id from contact where contact_id = ?";
-			PreparedStatement statement = connection.prepareStatement(selectSql);
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.GET_USER_BY_CONTACTID_QUERY);
 			statement.setInt(1, contactId);
 
 			resultSet = statement.executeQuery();
