@@ -4,21 +4,11 @@ import java.sql.Date;
 
 public class Chat {
 
-	private int userId;
 	private int chatId;
 	private int contactUserId;
-	private String contactName;
 	private String lastMessageContent;
 	private int lastMessageBy;
 	private Date lastMessageSentTime;
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
 
 	public int getChatId() {
 		return chatId;
@@ -26,14 +16,6 @@ public class Chat {
 
 	public void setChatId(int chatId) {
 		this.chatId = chatId;
-	}
-
-	public String getContactName() {
-		return contactName;
-	}
-
-	public void setContactName(String contactName) {
-		this.contactName = contactName;
 	}
 
 	public String getLastMessageContent() {

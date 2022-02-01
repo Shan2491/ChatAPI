@@ -20,17 +20,17 @@ public class ChatService {
 	@Autowired
 	private ContactRepository contactRepo;
 
-	public String sendMessage(Map<String, String> req, int chatId) {
+	public String sendMessage(Map<String, String> req, int chatId, int userId) {
 
 		int result;
 		String resultMessage;
-		int contactUserId = getUseridforContact(Integer.parseInt(req.get("contact_id")));
-		result = chatRepo.addNewMessage(req, contactUserId, chatId);
+		int contactUserId = getUseridforContact(Integer.parseInt(req.get("contactId")));
+		result = chatRepo.addNewMessage(req, contactUserId, chatId, userId);
 		if (result == 0) {
 			resultMessage = "Message sent failed";
 		} else {
 			resultMessage = "Message Sent Successfully";
-			updateChat(req, contactUserId);
+			updateChat(req, contactUserId, userId);
 		}
 
 		return resultMessage;
@@ -49,10 +49,9 @@ public class ChatService {
 		return chatRepo.checkChatExists(primaryId, secondaryId);
 	}
 
-	public void updateChat(Map<String, String> req, int contactUserId) {
+	public void updateChat(Map<String, String> req, int contactUserId, int senderId) {
 		int primaryId = 0;
 		int secondaryId = 0;
-		int senderId = Integer.parseInt(req.get("sender_user_id"));
 		if (senderId > contactUserId) {
 			primaryId = senderId;
 			secondaryId = contactUserId;
@@ -73,11 +72,12 @@ public class ChatService {
 		int primaryId = 0;
 		int secondaryId = 0;
 		String resultMessage;
-		if (userId > contactId) {
+		int contactUserId = contactRepo.getUserbyContactId(contactId);
+		if (userId > contactUserId) {
 			primaryId = userId;
-			secondaryId = contactId;
+			secondaryId = contactUserId;
 		} else {
-			primaryId = contactId;
+			primaryId = contactUserId;
 			secondaryId = userId;
 		}
 		result = chatRepo.addChat(primaryId, secondaryId);

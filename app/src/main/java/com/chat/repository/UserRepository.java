@@ -46,11 +46,10 @@ public class UserRepository {
 				System.out.println("Connected to DB");
 			}
 			PreparedStatement statement = connection.prepareStatement(SQLHelper.INSERT_USER_INFO_QUERY);
-			statement.setString(1, "123");
-			statement.setString(2, user.getUserFirstName());
-			statement.setString(3, user.getUserLastName());
-			statement.setString(4, user.getContactNumber().getCountryCode());
-			statement.setString(5, user.getContactNumber().getMobileNumber());
+			statement.setString(1, user.getUserFirstName());
+			statement.setString(2, user.getUserLastName());
+			statement.setString(3, user.getContactNumber().getCountryCode());
+			statement.setString(4, user.getContactNumber().getMobileNumber());
 			
 			
 			result = statement.executeUpdate();
@@ -71,6 +70,7 @@ public class UserRepository {
 				System.out.println("Connected to DB");
 			}
 			PreparedStatement statement = connection.prepareStatement(SQLHelper.INSERT_USER_OTP_QUERY);
+			System.out.println("userId" + userId + "otp" + OTP);
 			statement.setInt(1, userId);
 			statement.setString(2, OTP);
 			result = statement.executeUpdate();
@@ -133,8 +133,8 @@ public class UserRepository {
 				System.out.println("Connected to DB");
 			}
 			PreparedStatement statement = connection.prepareStatement(SQLHelper.INSERT_TOKEN_QUERY);
-			statement.setInt(1, userId);
-			statement.setString(2, token);
+			statement.setString(1, token);
+			statement.setInt(2, userId);
 			result = statement.executeUpdate();
 		}
 		// Handle any errors that may have occurred.
@@ -143,6 +143,26 @@ public class UserRepository {
 		}
 		return result;
 		
+	}
+	
+	public int validateToken(String token) {
+		int userId = 0;
+		ResultSet resultSet = null;
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			if (connection != null) {
+				System.out.println("Connected to DB");
+			}
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.VALIDATE_TOKEN_QUERY);
+			statement.setString(1, token);
+			resultSet = statement.executeQuery();
+			while(resultSet.next()) {
+				userId = resultSet.getInt("user_id");
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return userId;
 	}
 	
 }

@@ -3,14 +3,18 @@ package com.chat.controller;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chat.model.Chat;
@@ -41,9 +45,9 @@ public class AppController {
 	@PostMapping("/users/login")
 	public String loginUser(@RequestBody Map<String, String> req) throws Exception {
 		String countryCode = req.get("countryCode");
-		String mobilNumber = req.get("mobileNumber");
-		if(null != countryCode && null != mobilNumber && "".equalsIgnoreCase(countryCode) && "".equalsIgnoreCase(mobilNumber)) {
-					return appService.loginUser(countryCode, mobilNumber);
+		String mobileNumber = req.get("mobileNumber");
+		if(null != countryCode && null != mobileNumber && !"".equalsIgnoreCase(countryCode) && !"".equalsIgnoreCase(mobileNumber)) {
+					return appService.loginUser(countryCode, mobileNumber);
 		}
 		return "Invalid Credentials";
 	}
@@ -51,11 +55,11 @@ public class AppController {
 	@PostMapping("/users/OTP")
 	public String validateUser(@RequestBody Map<String, String> req) throws Exception {
 		String countryCode = req.get("countryCode");
-		String mobilNumber = req.get("mobileNumber");
+		String mobileNumber = req.get("mobileNumber");
 		String OTP = req.get("OTP");
-		if(null != countryCode && null != mobilNumber && !"".equalsIgnoreCase(countryCode) && !"".equalsIgnoreCase(mobilNumber)
+		if(null != countryCode && null != mobileNumber && !"".equalsIgnoreCase(countryCode) && !"".equalsIgnoreCase(mobileNumber)
 				&& null != OTP && !"".equalsIgnoreCase(OTP)) {
-					return appService.validateUser(countryCode, mobilNumber, OTP);
+					return appService.validateUser(countryCode, mobileNumber, OTP);
 		}
 		return "Invalid Credentials";
 	}
@@ -66,12 +70,12 @@ public class AppController {
 	}
 
 	@PostMapping("/contacts")
-	public String createContact(@RequestBody Map<String, String> req) throws Exception {
-		return appService.createContact(req);
+	public String createContact(@RequestBody Map<String, String> req, @RequestAttribute int userId) throws Exception {
+		return appService.createContact(req, userId);
 	}
 
-	@GetMapping("/contacts/{userId}")
-	public ArrayList<Contact> getContactList(@PathVariable("userId") int userId) throws Exception {
+	@GetMapping("/contacts")
+	public ArrayList<Contact> getContactList(ServletRequest req, @RequestAttribute int userId) throws Exception {
 		return appService.contactList(userId);
 	}
 
@@ -90,21 +94,22 @@ public class AppController {
 		return appService.unBlockContact(contactId);
 	}
 
-	@PostMapping("/chats/{userId}")
-	public String createChat(@RequestBody Map<String, String> req, @PathVariable("userId") int userId)
+	@PostMapping("/chats")
+	public String createChat(@RequestBody Map<String, String> req, @RequestAttribute int userId)
 			throws Exception {
-		return chatService.createChat(Integer.parseInt(req.get("contactId")), userId);
+		System.out.println("userId" + userId + "contactId" + Integer.parseInt(req.get("contactId")));
+		return chatService.createChat(userId, Integer.parseInt(req.get("contactId")));
 	}
 
-	@GetMapping("/chats/{userId}")
-	public ArrayList<Chat> getChatHistory(@PathVariable("userId") int userId) throws Exception {
+	@GetMapping("/chats")
+	public ArrayList<Chat> getChatHistory(@RequestAttribute int userId) throws Exception {
 		return chatService.chatHistory(userId);
 	}
 
 	@PostMapping("/chats/{chatId}/messages")
-	public String sendMessage(@RequestBody Map<String, String> req, @PathVariable("chatId") int chatId)
+	public String sendMessage(@RequestBody Map<String, String> req, @PathVariable("chatId") int chatId, @RequestAttribute int userId)
 			throws Exception {
-		return chatService.sendMessage(req, chatId);
+		return chatService.sendMessage(req, chatId, userId);
 	}
 
 	@GetMapping("/chats/{chatId}/messages")

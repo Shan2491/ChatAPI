@@ -54,13 +54,19 @@ public class AppService {
 	}
 
 	public String loginUser(String countryCode, String mobileNumber) {
+		String message;
 		int userId = userRepo.getUserId(countryCode, mobileNumber);
 		if (userId == 0) {
-			return "Invalid User!!!";
+			message = "Invalid User!!!";
 		} else {
-			userRepo.loginUser(userId, generateOTP().toString());
-			return "OTP sent to your mobile, Please use that for login";
+			int otpInsert = userRepo.loginUser(userId, generateOTP());
+			if (otpInsert == 0) {
+				message = "OTP insert failed";
+			} else {
+				message = "OTP sent to your mobile, Please use that for login";
+			}
 		}
+		return message;
 	}
 
 	public String validateUser(String countryCode, String mobileNumber, String OTP) {
@@ -80,15 +86,16 @@ public class AppService {
 		return token;
 	}
 
-	private static char[] generateOTP() {
+	private static String generateOTP() {
 		String numbers = "1234567890";
 		Random random = new Random();
 		char[] otp = new char[4];
-
+		StringBuffer otpString = new StringBuffer();
 		for (int i = 0; i < otp.length; i++) {
 			otp[i] = numbers.charAt(random.nextInt(numbers.length()));
+			otpString = otpString.append(otp[i]);
 		}
-		return otp;
+		return otpString.toString();
 	}
 
 	public static String generateRandomToken(int len) {
@@ -113,13 +120,13 @@ public class AppService {
 		return result;
 	}
 
-	public String createContact(Map<String, String> req) {
+	public String createContact(Map<String, String> req, int userId) {
 
 		int result;
 		String resultMessage;
 		int contactUserId = userRepo.getUserId(req.get("country_code"), req.get("mobile_number"));
-		if (contactUserId == 0) {
-			result = contactRepo.createContact(req, contactUserId);
+		if (contactUserId != 0) {
+			result = contactRepo.createContact(req, contactUserId, userId);
 			if (result == 0) {
 				resultMessage = "Contact Creation Failed";
 			} else

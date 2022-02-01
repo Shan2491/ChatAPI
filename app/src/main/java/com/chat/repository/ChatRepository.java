@@ -17,7 +17,7 @@ import com.chat.model.Message;
 public class ChatRepository {
 	String connectionUrl = "jdbc:sqlserver://localhost:1433;database=MESSENGER;user=appuser1;password=password3;";
 
-	public int addNewMessage(Map<String, String> input, int receiverUserId, int chatId) {
+	public int addNewMessage(Map<String, String> input, int receiverUserId, int chatId, int userId) {
 		int result = 0;
 		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
 			if (connection != null) {
@@ -25,10 +25,10 @@ public class ChatRepository {
 			}
 
 			String selectSql = "INSERT INTO [dbo].[message_history] ([chat_id], [sender_user_id], [receiver_user_id], [message_type], [text_message_content], [message_sent_time] , [message_status])\r\n"
-					+ "     VALUES (?,?,?,?,GETDATE(),?)";
+					+ "     VALUES (?,?,?,?,?,GETDATE(),?)";
 			PreparedStatement statement = connection.prepareStatement(selectSql);
 			statement.setInt(1, chatId);
-			statement.setInt(2, Integer.parseInt(input.get("sender_user_id")));
+			statement.setInt(2, userId);
 			statement.setInt(3, receiverUserId);
 			statement.setString(4, input.get("message_type"));
 			statement.setString(5, input.get("message_content"));
@@ -159,7 +159,8 @@ public class ChatRepository {
 			if (connection != null) {
 				System.out.println("Connected to DB");
 			}
-			String selectSql = "select message_id, message_type, text_message_content from message_history where chat_id = ?";
+			String selectSql = "select message_id, message_type, text_message_content, message_sent_time, sender_user_id"
+					+ " from message_history where chat_id = ?";
 			PreparedStatement statement = connection.prepareStatement(selectSql);
 			statement.setInt(1, chatId);
 			resultSet = statement.executeQuery();
@@ -168,6 +169,8 @@ public class ChatRepository {
 				message.setMessageId(resultSet.getInt("message_id"));
 				message.setMessageType(resultSet.getString("message_type"));
 				message.setMessage_content(resultSet.getString("text_message_content"));
+				message.setMessageSentTime(resultSet.getDate("message_sent_time"));
+				message.setSenderUserId(resultSet.getInt("sender_user_id"));
 				chatHistory.add(message);
 			}
 		} catch (SQLException e) {

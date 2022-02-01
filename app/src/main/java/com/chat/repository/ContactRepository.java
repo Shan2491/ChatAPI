@@ -58,7 +58,7 @@ public class ContactRepository {
 		return contactList;
 	}
 
-	public int createContact(Map<String, String> input, int contactUserId) {
+	public int createContact(Map<String, String> input, int contactUserId, int userId) {
 		int result = 0;
 		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
 			if (connection != null) {
@@ -66,9 +66,9 @@ public class ContactRepository {
 			}
 
 			String selectSql = "Insert into contact (created_user_id, contact_first_name, contact_last_name, contact_user_id, created_time, blocked) "
-					+ "values (?, ?, ?, getdate(), ?) ";
+					+ "values (?, ?, ?, ?, getdate(), ?) ";
 			PreparedStatement statement = connection.prepareStatement(selectSql);
-			statement.setString(1, input.get("user_id"));
+			statement.setInt(1, userId);
 			statement.setString(2, input.get("first_name"));
 			statement.setString(3, input.get("last_name"));
 			statement.setInt(4, contactUserId);

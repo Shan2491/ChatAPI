@@ -15,10 +15,10 @@ public class HelloControllerTest {
     @Autowired
     private TestRestTemplate template;
 
-    @Test
-    public void hello_ok() throws Exception {
-        ResponseEntity<String> response = template.getForEntity("/", String.class);
-        assertThat(response.getBody()).isNotNull();
-    }
+	/*
+	 * @Test public void hello_ok() throws Exception { ResponseEntity<String>
+	 * response = template.getForEntity("/", String.class);
+	 * assertThat(response.getBody()).isNotNull(); }
+	 */
 
 }
