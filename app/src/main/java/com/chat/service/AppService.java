@@ -2,6 +2,7 @@ package com.chat.service;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,57 @@ public class AppService {
 
 		return resultMessage;
 
+	}
+
+	public String loginUser(String countryCode, String mobileNumber) {
+		int userId = userRepo.getUserId(countryCode, mobileNumber);
+		if (userId == 0) {
+			return "Invalid User!!!";
+		} else {
+			userRepo.loginUser(userId, generateOTP().toString());
+			return "OTP sent to your mobile, Please use that for login";
+		}
+	}
+
+	public String validateUser(String countryCode, String mobileNumber, String OTP) {
+		String token;
+		int userId = userRepo.getUserId(countryCode, mobileNumber);
+		if (userId == 0) {
+			token = "Invalid User!!!";
+		} else {
+			if (verifyOTP(userId, OTP)) {
+				token = generateRandomToken(15);
+				userRepo.createUserSession(userId, token);
+
+			} else {
+				token = "Invalid OTP";
+			}
+		}
+		return token;
+	}
+
+	private static char[] generateOTP() {
+		String numbers = "1234567890";
+		Random random = new Random();
+		char[] otp = new char[4];
+
+		for (int i = 0; i < otp.length; i++) {
+			otp[i] = numbers.charAt(random.nextInt(numbers.length()));
+		}
+		return otp;
+	}
+
+	public static String generateRandomToken(int len) {
+		String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%&";
+		Random rnd = new Random();
+		StringBuilder sb = new StringBuilder(len);
+		for (int i = 0; i < len; i++)
+			sb.append(chars.charAt(rnd.nextInt(chars.length())));
+		return sb.toString();
+	}
+
+	private boolean verifyOTP(int userId, String OTP) {
+		return userRepo.verifyOTP(userId, OTP);
 	}
 
 	public boolean checkUserExists(String countryCode, String mobileNumber) {

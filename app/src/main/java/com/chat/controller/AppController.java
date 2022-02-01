@@ -37,7 +37,29 @@ public class AppController {
 	public String createUser(@RequestBody Map<String, String> req) throws Exception {
 		return appService.createUser(req);
 	}
+	
+	@PostMapping("/users/login")
+	public String loginUser(@RequestBody Map<String, String> req) throws Exception {
+		String countryCode = req.get("countryCode");
+		String mobilNumber = req.get("mobileNumber");
+		if(null != countryCode && null != mobilNumber && "".equalsIgnoreCase(countryCode) && "".equalsIgnoreCase(mobilNumber)) {
+					return appService.loginUser(countryCode, mobilNumber);
+		}
+		return "Invalid Credentials";
+	}
 
+	@PostMapping("/users/OTP")
+	public String validateUser(@RequestBody Map<String, String> req) throws Exception {
+		String countryCode = req.get("countryCode");
+		String mobilNumber = req.get("mobileNumber");
+		String OTP = req.get("OTP");
+		if(null != countryCode && null != mobilNumber && !"".equalsIgnoreCase(countryCode) && !"".equalsIgnoreCase(mobilNumber)
+				&& null != OTP && !"".equalsIgnoreCase(OTP)) {
+					return appService.validateUser(countryCode, mobilNumber, OTP);
+		}
+		return "Invalid Credentials";
+	}
+	
 	@DeleteMapping("/users/{userId}")
 	public String deleteUser(@PathVariable("userId") int userId) throws Exception {
 		return appService.deleteUser(userId);
