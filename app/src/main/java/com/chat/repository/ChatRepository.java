@@ -133,7 +133,7 @@ public class ChatRepository {
 				}
 				chat.setLastMessageBy(Integer.parseInt(resultSet.getString("last_message_by")));
 				chat.setLastMessageContent(resultSet.getString("last_message_content"));
-				chat.setLastMessageSentTime(resultSet.getDate("last_message_sent_time"));
+				chat.setLastMessageSentTime(resultSet.getTimestamp("last_message_sent_time"));
 				chatList.add(chat);
 			}
 		} catch (SQLException e) {
@@ -160,7 +160,7 @@ public class ChatRepository {
 				message.setMessageId(resultSet.getInt("message_id"));
 				message.setMessageType(resultSet.getString("message_type"));
 				message.setMessage_content(resultSet.getString("text_message_content"));
-				message.setMessageSentTime(resultSet.getDate("message_sent_time"));
+				message.setMessageSentTime(resultSet.getTimestamp("message_sent_time"));
 				message.setSenderUserId(resultSet.getInt("sender_user_id"));
 				chatHistory.add(message);
 			}

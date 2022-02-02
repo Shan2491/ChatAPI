@@ -69,6 +69,11 @@ public class AppController {
 	public String deleteUser(@PathVariable("userId") int userId) throws Exception {
 		return appService.deleteUser(userId);
 	}
+	
+	@PostMapping("/logout")
+	public String logoutUser(@RequestAttribute int userId) throws Exception{
+		return appService.logoutUser(userId);
+	}
 
 	@PostMapping("/contacts")
 	public String createContact(@RequestBody Map<String, String> req, @RequestAttribute int userId) throws Exception {

@@ -76,6 +76,7 @@ public class AppService {
 			token = "Invalid User!!!";
 		} else {
 			if (verifyOTP(userId, OTP)) {
+				logoutUser(userId); //to logout all existing session
 				token = generateRandomToken(15);
 				userRepo.createUserSession(userId, token);
 
@@ -191,6 +192,17 @@ public class AppService {
 
 		return resultMessage;
 
+	}
+	
+	public String logoutUser(int userId) {
+		String message;
+			int otpInsert = userRepo.logoutUser(userId);
+			if (otpInsert == 0) {
+				message = "Logout failed";
+			} else {
+				message = "User Logout successfully";
+			}
+		return message;
 	}
 
 }

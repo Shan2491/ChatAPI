@@ -178,5 +178,25 @@ public class UserRepository {
 		return userName;
 
 	}
+	
+	public int logoutUser(int userId) {
+		int result = 0;
+		try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+			if (connection != null) {
+				System.out.println("Connected to DB");
+			}
+
+			PreparedStatement statement = connection.prepareStatement(SQLHelper.LOGOUT_SESSION);
+			statement.setInt(1, userId);
+
+			result = statement.executeUpdate();
+		}
+		// Handle any errors that may have occurred.
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
 
 }
