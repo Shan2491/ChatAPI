@@ -1,0 +1,385 @@
+{
+	"info": {
+		"_postman_id": "6f69455d-73f6-4c68-b83b-5984f774df13",
+		"name": "Chat API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "UserOnboarding",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"first_name\":\"Walter\",\r\n\"last_name\":\"White\",\r\n\"country_code\":\"+91\",\r\n\"mobile_number\":\"2301456879\",\r\n\"profile_photo\":\"pic.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User OTP Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"countryCode\":\"+91\",\r\n\"mobileNumber\":\"6374121480\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User OTP Validation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"countryCode\":\"+91\",\r\n\"mobileNumber\":\"6374121480\",\r\n\"OTP\":\"7122\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/OTP",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"OTP"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "yUW3HLO5B7r&kj%",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contacts",
+			"item": [
+				{
+					"name": "Contact Addition",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "yUW3HLO5B7r&kj%",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"first_name\": \"Mike\",\r\n\"last_name\": \"J\",\r\n\"country_code\":\"+91\",\r\n\"mobile_number\":\"7458692130\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/contacts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ContactsList",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "yUW3HLO5B7r&kj%",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/contacts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contact",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "ml#t&LrcJymiC@1",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/contacts/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Block Contact",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "ml#t&LrcJymiC@1",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/contacts/block/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts",
+								"block",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UnBlock Contact",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "ml#t&LrcJymiC@1",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/contacts/unblock/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"contacts",
+								"unblock",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chats",
+			"item": [
+				{
+					"name": "Create New Chat",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "ml#t&LrcJymiC@1",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contactId\":\"9\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/chats",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"chats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "ml#t&LrcJymiC@1",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contactId\":9,\r\n    \"message_type\":\"text\",\r\n    \"message_content\":\"How is everything?\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/chats/4/messages",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"chats",
+								"4",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Chat History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "ml#t&LrcJymiC@1",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/chats/4/messages",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"chats",
+								"4",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Conversation History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-AUTH-TOKEN",
+								"value": "ml#t&LrcJymiC@1",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/chats/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"chats",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Welcome",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
